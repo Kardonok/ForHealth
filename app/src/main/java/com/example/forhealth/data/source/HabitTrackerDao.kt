@@ -22,5 +22,5 @@ interface HabitTrackerDao {
     suspend fun update(item: HabitTrackerItem)
 
     @Query("SELECT * FROM habit_tracker_list")
-    fun getAllHabits(item: HabitTrackerItem): Flow<List<HabitTrackerItem>>
+    fun getAllHabits(): Flow<List<HabitTrackerItem>>
 }
