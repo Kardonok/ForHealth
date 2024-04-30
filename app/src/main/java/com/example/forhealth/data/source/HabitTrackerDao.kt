@@ -21,6 +21,9 @@ interface HabitTrackerDao {
     @Update
     suspend fun update(item: HabitTrackerItem)
 
+    @Query("SELECT start_time FROM habit_tracker_list WHERE habit_name=:habitName")
+    fun getHabit(habitName: String): Long
+
     @Query("SELECT * FROM habit_tracker_list")
     fun getAllHabits(): Flow<List<HabitTrackerItem>>
 }

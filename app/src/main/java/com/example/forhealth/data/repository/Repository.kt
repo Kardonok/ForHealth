@@ -1,4 +1,9 @@
 package com.example.forhealth.data.repository
 
-class Repository {
+import com.example.forhealth.data.source.HabitTrackerDao
+
+class Repository(
+    private val habitTrackerDao:HabitTrackerDao
+) {
+
 }
