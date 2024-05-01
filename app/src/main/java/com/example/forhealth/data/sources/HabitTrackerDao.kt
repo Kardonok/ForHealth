@@ -1,4 +1,4 @@
-package com.example.forhealth.data.source
+package com.example.forhealth.data.sources
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -9,7 +9,7 @@ import androidx.room.Update
 import com.example.forhealth.data.models.HabitTrackerItem
 import kotlinx.coroutines.flow.Flow
 
-
+//Dao для таблицы трекера привычек
 @Dao
 interface HabitTrackerDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -20,9 +20,6 @@ interface HabitTrackerDao {
 
     @Update
     suspend fun update(item: HabitTrackerItem)
-
-    @Query("SELECT start_time FROM habit_tracker_list WHERE habit_name=:habitName")
-    fun getHabit(habitName: String): Long
 
     @Query("SELECT * FROM habit_tracker_list")
     fun getAllHabits(): Flow<List<HabitTrackerItem>>

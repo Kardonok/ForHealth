@@ -4,6 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+
+/**данный класс описывает столбцы в таблице, предназначенной для хранения привычек
+ *
+ * в будущем будет добавлено поле, предназначенное для хранения id пользователя
+*/
 @Entity(tableName = "habit_tracker_list")
 data class HabitTrackerItem(
     @ColumnInfo(name = "habit_name") val habitName:String,

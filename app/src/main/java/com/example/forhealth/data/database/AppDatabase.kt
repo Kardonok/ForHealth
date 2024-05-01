@@ -1,13 +1,16 @@
-package com.example.forhealth.data.repository
+package com.example.forhealth.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.forhealth.data.models.HabitTrackerItem
-import com.example.forhealth.data.source.HabitTrackerDao
+import com.example.forhealth.data.sources.HabitTrackerDao
 
-
+/** Главная база данных всего приложения
+ *
+ *  метод getHabitTrackerDao() служит для получения Dao для HabitTracker
+ */
 @Database(entities = [HabitTrackerItem::class],
     version = 1,
     exportSchema = false,

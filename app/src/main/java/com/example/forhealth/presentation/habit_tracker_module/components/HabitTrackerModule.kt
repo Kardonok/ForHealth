@@ -1,6 +1,8 @@
 package com.example.forhealth.presentation.habit_tracker_module.components
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.runtime.Composable
 
 import androidx.compose.foundation.layout.Arrangement
@@ -18,24 +20,19 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Shapes
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,8 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.forhealth.data.models.HabitTrackerItem
 import com.example.forhealth.presentation.habit_tracker_module.HabitTrackerViewModel
-import org.intellij.lang.annotations.JdkConstants.FontStyle
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+
 
 @Preview(showBackground = true)
 @Composable
@@ -62,7 +58,7 @@ fun HabitTrackerModule(modifier: Modifier=Modifier,habitTrackerViewModel: HabitT
 
     if(habitTrackerViewModel.addCardIsOpen)
     {
-        AddCard(addCardIsClosed = {word:String-> habitTrackerViewModel.addToDatabase(word) }, habitTrackerViewModel = habitTrackerViewModel)
+        AddCard(addHabit = {word:String-> habitTrackerViewModel.addToDatabase(word) }, habitTrackerViewModel = habitTrackerViewModel)
     }
 
     Column(horizontalAlignment=Alignment.CenterHorizontally,modifier = modifier) {
@@ -70,12 +66,14 @@ fun HabitTrackerModule(modifier: Modifier=Modifier,habitTrackerViewModel: HabitT
             .fillMaxWidth()) {
             items(itemList.value){
                     item->
-                Box(modifier = modifier.padding(top=16.dp, start = 16.dp, end=16.dp))
-                {
-                    HabitCard(
-                        habitTrackerItem = item,
-                        habitTrackerViewModel = habitTrackerViewModel,
-                        currentTime=currentTime)
+                AnimatedVisibility(visible = true, enter = fadeIn() + expandVertically()) {
+                    Box(modifier = modifier.padding(top=16.dp, start = 16.dp, end=16.dp))
+                    {
+                        HabitCard(
+                            habitTrackerItem = item,
+                            habitTrackerViewModel = habitTrackerViewModel,
+                            currentTime=currentTime)
+                    }
                 }
             }
             item {
@@ -90,7 +88,7 @@ fun HabitTrackerModule(modifier: Modifier=Modifier,habitTrackerViewModel: HabitT
     }
 }
 
-
+//Отдельная карточка привычки
 @Composable
 fun HabitCard(currentTime:Long,habitTrackerItem: HabitTrackerItem, habitTrackerViewModel: HabitTrackerViewModel, modifier: Modifier=Modifier)
 {
@@ -102,35 +100,42 @@ fun HabitCard(currentTime:Long,habitTrackerItem: HabitTrackerItem, habitTrackerV
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier=modifier.fillMaxWidth()) {
-                //надо заменить на iconbutton
+                //Кнопка удаления привычки
                 IconButton(onClick = {  habitTrackerViewModel.deleteFromDatabase(habitTrackerItem) }) {
                     Icon(Icons.Filled.Close, contentDescription = "Close Icon")
                 }
                 Text(text = habitTrackerItem.habitName, fontSize = 24.sp, fontFamily = FontFamily.SansSerif)
-                //надо заменить на iconbutton
+                //Кнопка сброса таймера и фиксации времени
                 IconButton(onClick = { habitTrackerViewModel.updateDatabaseItem(habitTrackerItem) }) {
                     Icon(Icons.Filled.Refresh, contentDescription = "Reset Icon")
                 }
             }
             Spacer(modifier = modifier.height(8.dp))
+            //Поле отображающее время прошедшее с начала отсчета
             Text(text = "--${habitTrackerViewModel.timeFormator(currentTime-habitTrackerItem.startTime)}--",fontFamily = FontFamily.SansSerif, fontSize = 30.sp)
             Spacer(modifier = modifier.height(16.dp))
+            //Поле отображающее максимальное время, которое смог выдержать пользователь
             Text(text = "Лучшая череда: ${habitTrackerViewModel.timeFormator(habitTrackerItem.maxScore)}",fontFamily = FontFamily.SansSerif, fontSize = 16.sp)
             Spacer(modifier = modifier.height(8.dp))
         }
     }
 }
 
+//карточка добавления привычки, возможно она излишне минималистичка, ее бы я исправил
 @Composable
-fun AddCard(addCardIsClosed: (habit:String) -> Unit,habitTrackerViewModel: HabitTrackerViewModel,modifier: Modifier=Modifier)
+fun AddCard(addHabit: (habit:String) -> Unit,habitTrackerViewModel: HabitTrackerViewModel,modifier: Modifier=Modifier)
 {
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Card() {
-            Column(horizontalAlignment = Alignment.End, modifier = modifier.padding(16.dp)) {
-                TextField(value = habitTrackerViewModel.habit, onValueChange = {habitTrackerViewModel.habit=it})
-                Button(onClick = { addCardIsClosed(habitTrackerViewModel.habit)
+            Column(horizontalAlignment = Alignment.End, modifier = modifier.padding(top=8.dp,start=8.dp,end=8.dp)) {
+                OutlinedTextField(value = habitTrackerViewModel.habit,
+                    onValueChange = { habitTrackerViewModel.checkInput(it) },
+                    label = { Text("Название привычки") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),)
+                TextButton(onClick = { addHabit(habitTrackerViewModel.habit)
                     habitTrackerViewModel.addCardIsOpen=false}) {
-                    Text(text = "Ок")
+                    Text(text = "ОK",fontFamily = FontFamily.SansSerif,)
                 }
             }
 

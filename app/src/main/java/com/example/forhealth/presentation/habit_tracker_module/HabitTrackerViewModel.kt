@@ -9,9 +9,8 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.forhealth.data.models.HabitTrackerItem
-import com.example.forhealth.data.repository.App
-import com.example.forhealth.data.repository.AppDatabase
-import kotlinx.coroutines.Dispatchers
+import com.example.forhealth.data.database.App
+import com.example.forhealth.data.repositories.HabitTrackerRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,14 +18,16 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
+class HabitTrackerViewModel(private val habitTrackerRepository: HabitTrackerRepository):ViewModel() {
 
-    val itemsList = database.getHabitTrackerDao().getAllHabits()
+    val itemsList = habitTrackerRepository.getAllHabits()
 
+    //поле хранящее название привычки при вводе в поле добавления привычки
     var habit:String by mutableStateOf("")
+    //просто перемычка для карточки добавления
     var addCardIsOpen:Boolean by mutableStateOf(false)
 
-
+    //вычисление времени просиходит так: берем start_time привычки, текущее время и вычисляем по формуле: текущее время - start_time
     private val _currentTime = MutableStateFlow(fixCurrentTime())
     val currentTime: StateFlow<Long> = _currentTime
 
@@ -34,6 +35,7 @@ class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
         updateCurrentTime()
     }
 
+    //эта функция запускается в другом потоке и обновляет все таймеры с промежутком в секунду
     private fun updateCurrentTime() {
         viewModelScope.launch {
             while (true) {
@@ -43,11 +45,17 @@ class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
         }
     }
 
+    //Проверка ввода, пока просто поставил ограничение ввода на 15 символов, если ввести больше интерфейс может поплыть
+    fun checkInput(word:String)
+    {
+        if(word.length<15)
+            habit=word
+    }
 
     fun deleteFromDatabase(habitTrackerItem: HabitTrackerItem)
     {
         viewModelScope.launch {
-            database.getHabitTrackerDao().delete(habitTrackerItem)
+            habitTrackerRepository.deleteHabit(habitTrackerItem)
         }
     }
 
@@ -55,7 +63,8 @@ class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
     {
         viewModelScope.launch {
             val newHabitTrackerItem = HabitTrackerItem(habitName=habitName, startTime = fixCurrentTime())
-            database.getHabitTrackerDao().insert(newHabitTrackerItem)
+            habitTrackerRepository.insertHabit(newHabitTrackerItem)
+            habit=""
         }
     }
 
@@ -66,15 +75,18 @@ class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
                 maxScore = fixCurrentTime()-habitTrackerItem.startTime
             }
             val updateItem = habitTrackerItem.copy(startTime = fixCurrentTime(), maxScore =maxScore )
-            database.getHabitTrackerDao().update(updateItem)
+            habitTrackerRepository.updateHabit(updateItem)
         }
     }
 
 
+    //беру время в секундах, если по другому, то просто делаю временную метку
     fun fixCurrentTime(): Long {
         return LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
     }
 
+    //тк используется java.time время я беру в секундах, ну короче там идет отсчет от какого то числа я его и беру
+    //а потом форматирую так как нам надо
     fun timeFormator(seconds:Long):String
     {
         val h = seconds / 3600
@@ -84,6 +96,7 @@ class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
         return String.format("%02d:%02d:%02d", h, m, s)
     }
 
+    //это неприятное последствие отсутствия dependency injection в будущем надо исправить ибо это нарушение паттернов
     companion object{
         val factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory{
             @Suppress("UNCHECKED_CAST")
@@ -91,7 +104,7 @@ class HabitTrackerViewModel(private val database: AppDatabase):ViewModel() {
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                val database = (checkNotNull(extras[APPLICATION_KEY]) as App).database
+                val database = (checkNotNull(extras[APPLICATION_KEY]) as App).habitTrackerRepository
                 return HabitTrackerViewModel(database) as T
             }
         }
