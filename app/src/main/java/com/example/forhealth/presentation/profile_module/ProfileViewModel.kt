@@ -12,6 +12,7 @@ import com.example.forhealth.data.models.ProfileItem
 import com.example.forhealth.data.repositories.ProfileRepository
 import kotlinx.coroutines.launch
 
+//INSERT INTO profile_list VALUES("Дмитрий", "168", "68", "1")
 class ProfileViewModel(private val profileRepository: ProfileRepository):ViewModel() {
     val profile = profileRepository.getProfile()
 
@@ -28,10 +29,6 @@ class ProfileViewModel(private val profileRepository: ProfileRepository):ViewMod
             "height" -> if(CheckWord(value,3))height = value
         }
     }
-    init {
-        val newProfile = ProfileItem(userName = "", userHeight = "", userWeight = "")
-        addToDatabase(newProfile)
-    }
 
     fun updateProfileInDatabase(profileItem: ProfileItem)
     {
@@ -42,11 +39,19 @@ class ProfileViewModel(private val profileRepository: ProfileRepository):ViewMod
         editCardIsOpen = false
     }
 
-    fun addToDatabase(profileItem: ProfileItem)
+    fun deleteProfileFromDatabase(profileItem: ProfileItem?)
     {
-        viewModelScope.launch {
-            profileRepository.insertProfile(profileItem)
+        if(profileItem!=null)
+        {
+            viewModelScope.launch {
+                profileRepository.deleteProfile(profileItem)
+            }
         }
+    }
+    fun addProfileToDatabase(profileItem: ProfileItem)
+    {
+            viewModelScope.launch {
+                profileRepository.insertProfile(profileItem)}
     }
 
     fun CheckWord(value: String,maxLength:Int):Boolean
