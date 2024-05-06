@@ -51,7 +51,7 @@ fun ProfileModulePreview()
 @Composable
 fun ProfileModule(modifier:Modifier = Modifier, profileViewModel: ProfileViewModel = viewModel(factory=ProfileViewModel.factory))
 {
-    val profile = profileViewModel.profile.collectAsState(initial = ProfileItem(id = 0, userName = "Ginger", userWeight = "100", userHeight = "180"))
+    val profile = profileViewModel.profile.collectAsState(initial = ProfileItem(id = 0, userName = "", userWeight = "", userHeight = ""))
 
     if(profileViewModel.editCardIsOpen)
     {
@@ -59,7 +59,7 @@ fun ProfileModule(modifier:Modifier = Modifier, profileViewModel: ProfileViewMod
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        UserCard(profileItem = profile.value, editCardIsOpen = profileViewModel.editCardIsOpen)
+        UserCard(profileItem = profile.value, profileViewModel = profileViewModel)
         SettingsCard()
         TextButton(onClick = { /*TODO*/ }) {
             Text(text = "выйти из аккаунта")
@@ -71,17 +71,17 @@ fun ProfileModule(modifier:Modifier = Modifier, profileViewModel: ProfileViewMod
 }
 
 @Composable
-fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, editCardIsOpen:Boolean)
+fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, profileViewModel: ProfileViewModel)
 {
 
     Card(modifier= Modifier
-        .height(180.dp))
+        .height(180.dp).padding(8.dp))
     //.width(300.dp))
     {
         Row(verticalAlignment = Alignment.CenterVertically,modifier= Modifier
             .background(color = Color.Magenta)
             .padding(start = 16.dp, end = 16.dp)) {
-            IconButton(onClick = { !editCardIsOpen },modifier= Modifier
+            IconButton(onClick = { profileViewModel.editCardIsOpen = true },modifier= Modifier
                 .width(32.dp)
                 .height(32.dp)) {
                 Icon(Icons.Filled.Create, contentDescription = "Edit Icon")
@@ -159,7 +159,7 @@ fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, editCardIsO
 @Composable
 fun SettingsCard(modifier:Modifier = Modifier)
 {
-    Card(modifier) {
+    Card(modifier=modifier) {
         Column(modifier = Modifier
             .padding(16.dp)) {
             Row {
