@@ -28,6 +28,10 @@ class ProfileViewModel(private val profileRepository: ProfileRepository):ViewMod
             "height" -> if(CheckWord(value,3))height = value
         }
     }
+    init {
+        val newProfile = ProfileItem(userName = "", userHeight = "", userWeight = "")
+        addToDatabase(newProfile)
+    }
 
     fun updateProfileInDatabase(profileItem: ProfileItem)
     {
@@ -36,6 +40,13 @@ class ProfileViewModel(private val profileRepository: ProfileRepository):ViewMod
             profileRepository.updateProfile(updateProfile)
         }
         editCardIsOpen = false
+    }
+
+    fun addToDatabase(profileItem: ProfileItem)
+    {
+        viewModelScope.launch {
+            profileRepository.insertProfile(profileItem)
+        }
     }
 
     fun CheckWord(value: String,maxLength:Int):Boolean

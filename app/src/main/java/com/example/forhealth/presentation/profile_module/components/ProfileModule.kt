@@ -15,13 +15,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -37,19 +42,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.forhealth.R
 import com.example.forhealth.data.models.ProfileItem
+import com.example.forhealth.navigation.NavBar
+import com.example.forhealth.navigation.Screen
 import com.example.forhealth.presentation.profile_module.ProfileViewModel
 
 @Preview
 @Composable
 fun ProfileModulePreview()
 {
-    ProfileModule()
+    //ProfileModule()
 }
 
 @Composable
-fun ProfileModule(modifier:Modifier = Modifier, profileViewModel: ProfileViewModel = viewModel(factory=ProfileViewModel.factory))
+fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier, profileViewModel: ProfileViewModel = viewModel(factory=ProfileViewModel.factory))
 {
     val profile = profileViewModel.profile.collectAsState(initial = ProfileItem(id = 0, userName = "", userWeight = "", userHeight = ""))
 
@@ -58,14 +66,21 @@ fun ProfileModule(modifier:Modifier = Modifier, profileViewModel: ProfileViewMod
         EditCard(profileItem = profile.value, profileViewModel = profileViewModel)
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        UserCard(profileItem = profile.value, profileViewModel = profileViewModel)
-        SettingsCard()
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(text = "выйти из аккаунта")
+    Scaffold(
+        bottomBar = {
+            NavBar(navController = navController)
         }
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(text = "удалить аккаунт",color=Color.Red)
+    ) { innerPadding ->
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(innerPadding).padding(top = 16.dp,start=16.dp,end=16.dp)) {
+            UserCard(profileItem = profile.value, profileViewModel = profileViewModel)
+            Spacer(modifier = modifier.height(16.dp))
+            SettingsCard(modifier=modifier.weight(1f))
+            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.height(40.dp)) {
+                Text(text = "выйти из аккаунта", fontSize = 16.sp)
+            }
+            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.height(40.dp)) {
+                Text(text = "удалить аккаунт",color=Color.Red, fontSize = 16.sp)
+            }
         }
     }
 }
@@ -75,7 +90,7 @@ fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, profileView
 {
 
     Card(modifier= Modifier
-        .height(180.dp).padding(8.dp))
+        .height(180.dp))
     //.width(300.dp))
     {
         Row(verticalAlignment = Alignment.CenterVertically,modifier= Modifier
