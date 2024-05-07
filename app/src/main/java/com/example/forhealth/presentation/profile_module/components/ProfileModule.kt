@@ -43,6 +43,7 @@ import androidx.navigation.NavHostController
 import com.example.forhealth.R
 import com.example.forhealth.data.models.ProfileItem
 import com.example.forhealth.navigation.NavBar
+import com.example.forhealth.navigation.Screen
 import com.example.forhealth.presentation.profile_module.ProfileViewModel
 
 @Preview
@@ -76,7 +77,7 @@ fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier
             }
             else
             {
-                DefaultUserCard()
+                DefaultUserCard(navController=navController)
             }
             Spacer(modifier = modifier.height(16.dp))
             SettingsCard(modifier = modifier.weight(1f))
@@ -229,7 +230,7 @@ fun EditCard(profileItem: ProfileItem, profileViewModel: ProfileViewModel,modifi
 }
 
 @Composable
-fun DefaultUserCard(modifier:Modifier = Modifier)
+fun DefaultUserCard(modifier:Modifier = Modifier, navController: NavHostController)
 {
     Card(modifier= modifier
         .height(180.dp))
@@ -251,7 +252,7 @@ fun DefaultUserCard(modifier:Modifier = Modifier)
                         .clip(RoundedCornerShape(75.dp)))
                 Box(modifier = modifier.weight(1f))
                 {
-                    TextButton(onClick = { /*TODO*/ },modifier.align(alignment = Alignment.Center)) {
+                    TextButton(onClick = { navController.navigate(Screen.Greeting.rout) },modifier.align(alignment = Alignment.Center)) {
                         Icon(Icons.Filled.Create, contentDescription = "Edit Icon")
                         Text(text = "Создать аккаунт")
                     }
@@ -261,3 +262,4 @@ fun DefaultUserCard(modifier:Modifier = Modifier)
         }
     }
 }
+
