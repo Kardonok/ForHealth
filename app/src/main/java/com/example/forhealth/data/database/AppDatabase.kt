@@ -5,19 +5,22 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.forhealth.data.models.HabitTrackerItem
+import com.example.forhealth.data.models.ProfileItem
 import com.example.forhealth.data.sources.HabitTrackerDao
+import com.example.forhealth.data.sources.ProfileDao
 
 /** Главная база данных всего приложения
  *
  *  метод getHabitTrackerDao() служит для получения Dao для HabitTracker
  */
-@Database(entities = [HabitTrackerItem::class],
+@Database(entities = [HabitTrackerItem::class,ProfileItem::class],
     version = 1,
     exportSchema = false,
 )
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getHabitTrackerDao(): HabitTrackerDao
+    abstract fun getProfileDao(): ProfileDao
 
     companion object {
         @Volatile

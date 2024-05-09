@@ -77,6 +77,7 @@ class HabitTrackerViewModel(private val habitTrackerRepository: HabitTrackerRepo
             val updateItem = habitTrackerItem.copy(startTime = fixCurrentTime(), maxScore =maxScore )
             habitTrackerRepository.updateHabit(updateItem)
         }
+
     }
 
 

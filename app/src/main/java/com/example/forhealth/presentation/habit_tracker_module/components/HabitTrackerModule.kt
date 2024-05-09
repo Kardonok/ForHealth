@@ -24,6 +24,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.collectAsState
@@ -32,13 +33,16 @@ import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.forhealth.data.models.HabitTrackerItem
+import com.example.forhealth.navigation.NavBar
 import com.example.forhealth.presentation.habit_tracker_module.HabitTrackerViewModel
 
 
@@ -46,11 +50,11 @@ import com.example.forhealth.presentation.habit_tracker_module.HabitTrackerViewM
 @Composable
 fun HabitTrackerModulePreview()
 {
-    HabitTrackerModule()
+    //HabitTrackerModule()
 }
 
 @Composable
-fun HabitTrackerModule(modifier: Modifier=Modifier,habitTrackerViewModel: HabitTrackerViewModel=viewModel(factory=HabitTrackerViewModel.factory)) {
+fun HabitTrackerModule(navController: NavHostController,modifier: Modifier=Modifier,habitTrackerViewModel: HabitTrackerViewModel=viewModel(factory=HabitTrackerViewModel.factory)) {
 
     val itemList = habitTrackerViewModel.itemsList.collectAsState(initial = emptyList())
 
@@ -61,27 +65,39 @@ fun HabitTrackerModule(modifier: Modifier=Modifier,habitTrackerViewModel: HabitT
         AddCard(addHabit = {word:String-> habitTrackerViewModel.addToDatabase(word) }, habitTrackerViewModel = habitTrackerViewModel)
     }
 
-    Column(horizontalAlignment=Alignment.CenterHorizontally,modifier = modifier) {
-        LazyColumn(modifier = modifier
-            .fillMaxWidth()) {
-            items(itemList.value){
-                    item->
-                AnimatedVisibility(visible = true, enter = fadeIn() + expandVertically()) {
-                    Box(modifier = modifier.padding(top=16.dp, start = 16.dp, end=16.dp))
-                    {
-                        HabitCard(
-                            habitTrackerItem = item,
-                            habitTrackerViewModel = habitTrackerViewModel,
-                            currentTime=currentTime)
+
+    Scaffold(
+        bottomBar = {
+            NavBar(navController = navController)
+        }
+    ) { innerPadding ->
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(innerPadding)) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                items(itemList.value) { item ->
+                    AnimatedVisibility(visible = true, enter = fadeIn() + expandVertically()) {
+                        Box(modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp))
+                        {
+                            HabitCard(
+                                habitTrackerItem = item,
+                                habitTrackerViewModel = habitTrackerViewModel,
+                                currentTime = currentTime
+                            )
+                        }
                     }
                 }
-            }
-            item {
+                item {
 
-                IconButton(onClick = { habitTrackerViewModel.addCardIsOpen = true }, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add Icon")
+                    IconButton(
+                        onClick = { habitTrackerViewModel.addCardIsOpen = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Icon(Icons.Filled.Add, contentDescription = "Add Icon")
+                    }
                 }
             }
         }
@@ -127,14 +143,16 @@ fun AddCard(addHabit: (habit:String) -> Unit,habitTrackerViewModel: HabitTracker
 {
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Card() {
-            Column(horizontalAlignment = Alignment.End, modifier = modifier.padding(top=8.dp,start=8.dp,end=8.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(top=8.dp,start=8.dp,end=8.dp)) {
+                Text(text = "Добавить привычку",fontFamily = FontFamily.SansSerif)
+                Spacer(modifier.height(8.dp))
                 OutlinedTextField(value = habitTrackerViewModel.habit,
                     onValueChange = { habitTrackerViewModel.checkInput(it) },
                     label = { Text("Название привычки") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),)
                 TextButton(onClick = { addHabit(habitTrackerViewModel.habit)
-                    habitTrackerViewModel.addCardIsOpen=false}) {
+                    habitTrackerViewModel.addCardIsOpen=false}, modifier = modifier.align(alignment = Alignment.End)) {
                     Text(text = "ОK",fontFamily = FontFamily.SansSerif,)
                 }
             }
