@@ -196,12 +196,12 @@ fun EditCard(profileItem: ProfileItem, profileViewModel: ProfileViewModel,modifi
     Dialog(onDismissRequest = {}) {
         Card(modifier = modifier.padding(16.dp)
         ) {
-            Column(
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                Text("Редактировать профиль")
+                Text("Редактировать профиль",fontFamily = FontFamily.SansSerif)
                 Spacer(modifier.height(8.dp))
                 OutlinedTextField(value = profileViewModel.name,
                     singleLine = true,
@@ -221,8 +221,8 @@ fun EditCard(profileItem: ProfileItem, profileViewModel: ProfileViewModel,modifi
                     onValueChange = {word->profileViewModel.OnFieldChanged("height",word)},
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),)
                 Spacer(modifier.height(8.dp))
-                Button(onClick = { profileViewModel.updateProfileInDatabase(profileItem) }) {
-                    Text("Сохранить")
+                TextButton(onClick = { profileViewModel.updateProfileInDatabase(profileItem)}, modifier = modifier.align(alignment = Alignment.End)) {
+                    Text(text = "ОK",fontFamily = FontFamily.SansSerif,)
                 }
             }
         }

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -60,12 +61,12 @@ fun GreetingModule(navController: NavHostController, modifier: Modifier=Modifier
             } },
     ) { innerPadding ->
         Column(modifier = modifier.padding(innerPadding)) {
-            Spacer(modifier = modifier.weight(0.1f))
+            Spacer(modifier = modifier.weight(0.2f))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
                 modifier = modifier
-                    .weight(0.9f)
+                    .weight(0.8f)
                     .fillMaxWidth()
             ) {
                 Image(
@@ -85,7 +86,7 @@ fun GreetingModule(navController: NavHostController, modifier: Modifier=Modifier
                     Text(text = "Войти")
                 }
                 Spacer(modifier = modifier.height(10.dp))
-                Button(onClick = { navController.navigate(Screen.Registration.rout) },modifier.width(180.dp)) {
+                FilledTonalButton(onClick = { navController.navigate(Screen.Registration.rout) },modifier.width(180.dp)) {
                     Text(text = "Регистрация")
                 }
             }
@@ -110,7 +111,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
             } },
     ) { innerPadding ->
         Column(modifier = modifier.padding(innerPadding)) {
-            Box(modifier = modifier.weight(0.1f))
+            Box(modifier = modifier.weight(0.2f))
             {
                 IconButton(onClick = { navController.popBackStack() },){
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Return Icon")
@@ -120,7 +121,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
                 modifier = modifier
-                    .weight(0.9f)
+                    .weight(0.8f)
                     .fillMaxWidth()
             ) {
                 Image(
@@ -165,7 +166,7 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
     ) { innerPadding ->
 
         Column(modifier = modifier.padding(innerPadding)) {
-            Box(modifier = modifier.weight(0.1f))
+            Box(modifier = modifier.weight(0.2f))
             {
                 IconButton(onClick = { navController.popBackStack() },){
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Return Icon")
@@ -175,7 +176,7 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
                 modifier = modifier
-                    .weight(0.9f)
+                    .weight(0.8f)
                     .fillMaxWidth()
             ) {
                 Image(

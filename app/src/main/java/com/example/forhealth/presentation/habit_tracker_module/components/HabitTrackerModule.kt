@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -142,14 +143,16 @@ fun AddCard(addHabit: (habit:String) -> Unit,habitTrackerViewModel: HabitTracker
 {
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Card() {
-            Column(horizontalAlignment = Alignment.End, modifier = modifier.padding(top=8.dp,start=8.dp,end=8.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(top=8.dp,start=8.dp,end=8.dp)) {
+                Text(text = "Добавить привычку",fontFamily = FontFamily.SansSerif)
+                Spacer(modifier.height(8.dp))
                 OutlinedTextField(value = habitTrackerViewModel.habit,
                     onValueChange = { habitTrackerViewModel.checkInput(it) },
                     label = { Text("Название привычки") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),)
                 TextButton(onClick = { addHabit(habitTrackerViewModel.habit)
-                    habitTrackerViewModel.addCardIsOpen=false}) {
+                    habitTrackerViewModel.addCardIsOpen=false}, modifier = modifier.align(alignment = Alignment.End)) {
                     Text(text = "ОK",fontFamily = FontFamily.SansSerif,)
                 }
             }
