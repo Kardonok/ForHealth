@@ -126,7 +126,7 @@ fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, profileView
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth()) {
             Image(
-                painter = painterResource(id = R.drawable.ginger),
+                painter = painterResource(id = R.drawable.loading_image),
                 contentDescription = null,
                 modifier= modifier
                     .clip(RoundedCornerShape(75.dp)))
@@ -246,7 +246,7 @@ fun DefaultUserCard(modifier:Modifier = Modifier, navController: NavHostControll
                     .padding(16.dp)
                     .fillMaxWidth()){
                 Image(
-                    painter = painterResource(id = R.drawable.ginger),
+                    painter = painterResource(id = R.drawable.loading_image),
                     contentDescription = null,
                     modifier= modifier
                         .clip(RoundedCornerShape(75.dp)))

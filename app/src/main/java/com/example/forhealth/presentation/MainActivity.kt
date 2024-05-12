@@ -10,8 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.forhealth.data.database.App
+import com.example.forhealth.data.repositories.dataStore
 import com.example.forhealth.navigation.Screen
 import com.example.forhealth.presentation.habit_tracker_module.components.HabitTrackerModule
+import com.example.forhealth.presentation.loading_module.components.LoadingModule
 import com.example.forhealth.presentation.profile_module.components.ProfileModule
 import com.example.forhealth.presentation.registration_module.components.GreetingModule
 import com.example.forhealth.presentation.registration_module.components.LoginModule
@@ -28,9 +31,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val app = applicationContext as App
+                    val dataStoreRepository = app.dataStoreRepository
+
                     val navController = rememberNavController()
 
-                    NavHost(navController= navController, startDestination = Screen.Greeting.rout)
+                    NavHost(navController= navController, startDestination = Screen.Loading.rout)
                     {
                         composable(route= Screen.HabitTracker.rout){
                             HabitTrackerModule(navController=navController)
@@ -46,6 +52,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route=Screen.Registration.rout){
                             RegistrationModule(navController=navController)
+                        }
+                        composable(route=Screen.Loading.rout){
+                            LoadingModule(navController = navController, dataStoreRepository = dataStoreRepository)
                         }
                     }
                 }

@@ -81,4 +81,6 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
