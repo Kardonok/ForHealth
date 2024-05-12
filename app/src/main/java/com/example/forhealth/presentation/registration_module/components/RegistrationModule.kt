@@ -73,19 +73,19 @@ fun GreetingModule(navController: NavHostController, modifier: Modifier=Modifier
                     painter = painterResource(R.drawable.greeting_image),
                     contentDescription = null
                 )
-                Spacer(modifier = modifier.height(40.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 Text(
                     fontSize = 32.sp,
                     fontFamily = FontFamily.SansSerif,
                     text = "Добро пожаловать!",
                 )
-                Spacer(modifier = modifier.height(20.dp))
+                Spacer(modifier = modifier.height(10.dp))
                 Text(fontSize = 20.sp, fontFamily = FontFamily.SansSerif, text = "давайте начнем")
-                Spacer(modifier = modifier.height(40.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 Button(onClick = { navController.navigate(Screen.Login.rout) },modifier.width(180.dp)) {
                     Text(text = "Войти")
                 }
-                Spacer(modifier = modifier.height(10.dp))
+                Spacer(modifier = modifier.height(5.dp))
                 FilledTonalButton(onClick = { navController.navigate(Screen.Registration.rout) },modifier.width(180.dp)) {
                     Text(text = "Регистрация")
                 }
@@ -128,21 +128,21 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
                     painter = painterResource(R.drawable.login_image),
                     contentDescription = null
                 )
-                Spacer(modifier = modifier.height(40.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 Text(fontSize = 32.sp, fontFamily = FontFamily.SansSerif, text = "Вход")
-                Spacer(modifier = modifier.height(40.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 OutlinedTextField(value = registrationViewModel.name,
                     onValueChange = { registrationViewModel.name=it },
                     leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "Login Icon") },
                     label = { Text(text = "Логин") },
                     singleLine = true,)
-                Spacer(modifier = modifier.height(10.dp))
+                Spacer(modifier = modifier.height(5.dp))
                 OutlinedTextField(value = registrationViewModel.password,
                     onValueChange = { registrationViewModel.password=it },
                     leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Login Icon") },
                     label = { Text(text = "Пароль") },
                     singleLine = true,)
-                Spacer(modifier = modifier.height(20.dp))
+                Spacer(modifier = modifier.height(10.dp))
                 Button(onClick = {  if(registrationViewModel.checkProfileInDatabase(profile.value)) {navController.navigate(Screen.Profile.rout) }},modifier= modifier.width(180.dp)) {
                     Text(text = "Вход")
                 }
@@ -150,6 +150,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
         }
     }
 }
+
 
 
 @Composable
@@ -183,33 +184,33 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
                     painter = painterResource(R.drawable.registration_image),
                     contentDescription = null
                 )
-                Spacer(modifier = modifier.height(40.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 Text(fontSize = 32.sp, fontFamily = FontFamily.SansSerif, text = "Регистрация")
-                Spacer(modifier = modifier.height(40.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 OutlinedTextField(value = registrationViewModel.name,
                     onValueChange = { registrationViewModel.name=it },
                     leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "Login Icon") },
                     label = { Text(text = "Логин") },
                     singleLine = true,)
-                Spacer(modifier = modifier.height(10.dp))
+                Spacer(modifier = modifier.height(5.dp))
                 OutlinedTextField(value = registrationViewModel.password,
                     onValueChange = { registrationViewModel.password=it },
                     leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Login Icon") },
                     label = { Text(text = "Пароль") },
                     singleLine = true,)
-                Spacer(modifier = modifier.height(10.dp))
+                Spacer(modifier = modifier.height(5.dp))
                 OutlinedTextField(value = registrationViewModel.height,
                     onValueChange = { registrationViewModel.height=it },
                     leadingIcon = { Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Login Icon") },
                     label = { Text(text = "Рост") },
                     singleLine = true,)
-                Spacer(modifier = modifier.height(10.dp))
+                Spacer(modifier = modifier.height(5.dp))
                 OutlinedTextField(value = registrationViewModel.weight,
                     onValueChange = { registrationViewModel.weight=it },
                     leadingIcon = { Icon(Icons.Filled.FavoriteBorder, contentDescription = "Login Icon") },
                     label = { Text(text = "Вес") },
                     singleLine = true,)
-                Spacer(modifier = modifier.height(20.dp))
+                Spacer(modifier = modifier.height(5.dp))
                 Button(onClick = {  registrationViewModel.addProfileToDatabase()
                                     navController.navigate(Screen.Profile.rout) },modifier= modifier.width(180.dp)) {
                     Text(text = "Регистрация")
