@@ -25,11 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,9 +37,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -56,7 +49,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,7 +60,6 @@ import androidx.navigation.NavHostController
 import com.example.forhealth.R
 import com.example.forhealth.data.models.WaterItem
 import com.example.forhealth.navigation.NavBar
-import com.example.forhealth.presentation.habit_tracker_module.components.AddCard
 import com.example.forhealth.presentation.water_module.WaterViewModel
 import kotlin.math.sin
 
@@ -117,17 +108,42 @@ fun WaterModule(waterViewModel: WaterViewModel= viewModel(factory = WaterViewMod
 @Composable
 fun RecordListCard(waterViewModel: WaterViewModel,modifier:Modifier=Modifier) {
     val waterItemList = waterViewModel.waterItemList.collectAsState(initial = emptyList())
-    Column(modifier= modifier
-        .fillMaxSize()
-        .border(width = 2.dp, shape = RoundedCornerShape(16.dp), color = Color.Black)) {
-
-        LazyColumn{
-            item{
-                Text(text = "Записи",modifier=modifier,fontFamily = FontFamily.SansSerif, fontSize = 20.sp)
-            }
-            items(waterItemList.value){ waterItem ->
-                SingleRecordCard(waterItem=waterItem,waterViewModel=waterViewModel)
-                Spacer(modifier = Modifier.height(16.dp))
+    Column(modifier = modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color(0xFF3F81FF),
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                )
+                .padding(vertical = 8.dp) // Добавляем вертикальные отступы
+        ) {
+            Text(
+                text = "Записи",
+                modifier = Modifier.align(Alignment.Center),
+                color = Color.White, // Задаем цвет текста белым для лучшего контраста
+                fontFamily = FontFamily.SansSerif,
+                fontSize = 20.sp
+            )
+        }
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(16.dp)
+            .background(color = Color.White))
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(
+                color = Color(0xFFCEDFFF),
+                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+            )
+            .padding(vertical = 16.dp) // Добавляем вертикальные отступы)
+        )
+        {
+            LazyColumn{
+                items(waterItemList.value){ waterItem ->
+                    SingleRecordCard(waterItem=waterItem,waterViewModel=waterViewModel)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
