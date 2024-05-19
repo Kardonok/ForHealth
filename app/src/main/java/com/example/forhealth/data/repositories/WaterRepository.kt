@@ -16,6 +16,9 @@ interface WaterRepository
     suspend fun updateWaterItem(waterItem: WaterItem)
 
     fun getAllWaterItems(): Flow<List<WaterItem>>
+
+    fun getWaterAmountCount(): Flow<Int?>
+
 }
 
 
@@ -37,6 +40,10 @@ class OfflineWaterRepository(private val waterDao: WaterDao):WaterRepository {
 
     override fun getAllWaterItems(): Flow<List<WaterItem>> {
         return waterDao.getAllWaterItems()
+    }
+
+    override fun getWaterAmountCount(): Flow<Int?> {
+        return waterDao.getWaterAmountCount()
     }
 
 }

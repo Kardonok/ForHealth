@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.forhealth.data.repositories.DataStoreRepository
 import com.example.forhealth.data.repositories.OfflineHabitTrackerRepository
 import com.example.forhealth.data.repositories.OfflineProfileRepository
+import com.example.forhealth.data.repositories.OfflineWaterRepository
 import com.example.forhealth.data.repositories.dataStore
 
 class App(): Application() {
@@ -12,6 +13,9 @@ class App(): Application() {
     }
     val profileRepository by lazy { OfflineProfileRepository(
         AppDatabase.getDatabase(this).getProfileDao())
+    }
+    val waterRepository by lazy { OfflineWaterRepository(
+        AppDatabase.getDatabase(this).getWaterDao())
     }
     val dataStoreRepository by lazy { DataStoreRepository(dataStore) }
 }

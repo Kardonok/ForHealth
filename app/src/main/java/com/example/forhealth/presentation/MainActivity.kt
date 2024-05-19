@@ -20,6 +20,7 @@ import com.example.forhealth.presentation.registration_module.components.Greetin
 import com.example.forhealth.presentation.registration_module.components.LoginModule
 import com.example.forhealth.presentation.registration_module.components.RegistrationModule
 import com.example.forhealth.presentation.ui.theme.ForHealthTheme
+import com.example.forhealth.presentation.water_module.components.WaterModule
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +56,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route=Screen.Loading.rout){
                             LoadingModule(navController = navController, dataStoreRepository = dataStoreRepository)
+                        }
+                        composable(route=Screen.Water.rout){
+                            WaterModule(navController = navController)
                         }
                     }
                 }

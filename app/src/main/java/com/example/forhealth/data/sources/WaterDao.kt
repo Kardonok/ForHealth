@@ -22,6 +22,9 @@ interface WaterDao {
     @Update
     suspend fun update(item: WaterItem)
 
-    @Query("SELECT * FROM water_list")
+    @Query("SELECT * FROM water_list ORDER BY drinking_time DESC")
     fun getAllWaterItems(): Flow<List<WaterItem>>
+
+    @Query("SELECT SUM(water_amount) FROM water_list")//нужно будет дополнить что время большен нуля сегодняшнего дня
+    fun getWaterAmountCount(): Flow<Int?>
 }

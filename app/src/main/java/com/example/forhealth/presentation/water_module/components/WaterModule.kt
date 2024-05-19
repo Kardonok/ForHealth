@@ -1,6 +1,7 @@
 package com.example.forhealth.presentation.water_module.components
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -11,26 +12,34 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,56 +54,101 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.forhealth.R
+import com.example.forhealth.data.models.WaterItem
 import com.example.forhealth.navigation.NavBar
+import com.example.forhealth.presentation.habit_tracker_module.components.AddCard
+import com.example.forhealth.presentation.water_module.WaterViewModel
 import kotlin.math.sin
 
 @Preview(showBackground = true)
 @Composable
 fun WaterModulePreview()
 {
-    WaterModule()
+    //WaterModule()
 }
 
 @Composable
-fun WaterModule(modifier:Modifier=Modifier)
+fun WaterModule(waterViewModel: WaterViewModel= viewModel(factory = WaterViewModel.factory), navController: NavHostController, modifier:Modifier=Modifier)
 {
+    val waterState by waterViewModel.waterState.collectAsState()
+
+    if(waterState.addWaterCardIsOpen)
+    {
+        ChooseWaterVolumeCard(waterViewModel = waterViewModel)
+    }
+
+
     Scaffold(
         bottomBar = {
-            //NavBar(navController = navController)
+            NavBar(navController = navController)
         }
     ) { innerPadding ->
-        Column(modifier= modifier.padding(innerPadding)) {
+        Column(modifier = modifier.padding(innerPadding)) {
             Drop(
-                usedWaterAmount = 800,
-                totalWaterAmount = 1000,
-                modifier = modifier.weight(0.5f)
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
+                usedWaterAmount = waterState.usedWaterAmount,
+                onAddWaterClick = { waterViewModel.waterCardIsOpen(true) },
+                totalWaterAmount = waterState.totalWaterAmount,
+                modifier = modifier
+                    .weight(0.5f)
+                    .padding(16.dp)
             )
-            RecordListCard(modifier = modifier.weight(0.5f).padding(16.dp))
+            RecordListCard(
+                waterViewModel = waterViewModel,
+                modifier = modifier
+                    .weight(0.5f)
+                    .padding(16.dp)
+            )
         }
     }
 }
 
 @Composable
-fun RecordListCard(modifier:Modifier=Modifier) {
-    Box(modifier= modifier
+fun RecordListCard(waterViewModel: WaterViewModel,modifier:Modifier=Modifier) {
+    val waterItemList = waterViewModel.waterItemList.collectAsState(initial = emptyList())
+    Column(modifier= modifier
         .fillMaxSize()
         .border(width = 2.dp, shape = RoundedCornerShape(16.dp), color = Color.Black)) {
-        Text(text = "Записи",modifier=modifier.padding(8.dp))
-        /*
-        LazyColumn {
-            items{ item ->
-                //SingleRecordCard()
+
+        LazyColumn{
+            item{
+                Text(text = "Записи",modifier=modifier,fontFamily = FontFamily.SansSerif, fontSize = 20.sp)
+            }
+            items(waterItemList.value){ waterItem ->
+                SingleRecordCard(waterItem=waterItem,waterViewModel=waterViewModel)
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
-        */
+    }
+}
+
+@Composable
+fun SingleRecordCard(waterItem:WaterItem,waterViewModel: WaterViewModel,modifier:Modifier=Modifier)
+{
+    Row(verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.SpaceBetween,modifier = modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(modifier = modifier.width(16.dp))
+            Icon(painterResource(id = R.drawable.cup), contentDescription = null)
+            Spacer(modifier = modifier.width(8.dp))
+            Text(text = waterViewModel.timeFormatter(waterItem.drinkingTime))
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "${waterItem.waterAmount.toString()} ml")
+            Spacer(modifier = modifier.width(8.dp))
+            Icon(Icons.Filled.Clear, contentDescription = null,modifier=modifier.clickable { waterViewModel.deleteFromDatabase(waterItem) })
+            Spacer(modifier = modifier.width(16.dp))
+        }
     }
 }
 
@@ -103,59 +157,98 @@ fun RecommendationsCard(modifier:Modifier=Modifier) {
     Box(modifier= modifier
         .fillMaxSize()
         .border(width = 2.dp, shape = RoundedCornerShape(16.dp), color = Color.Black)) {
-        Text(text = "Записи",modifier=modifier.padding(8.dp))
+        Text(text = "Записи",modifier=modifier.padding(16.dp))
     }
 }
 
-@Composable
-fun SingleRecordCard(modifier:Modifier=Modifier)
-{
-    Row(verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.SpaceBetween,modifier = modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.FavoriteBorder, contentDescription = null)
-            Spacer(modifier = modifier.width(8.dp))
-            Text(text = "12:40")
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "100")
-            Spacer(modifier = modifier.width(8.dp))
-            Icon(Icons.Filled.Clear, contentDescription = null,modifier=modifier.clickable {  })
-        }
-    }
-}
+
 
 @Composable
-fun ChooseWaterVolumeCard()
+fun ChooseWaterVolumeCard(waterViewModel: WaterViewModel, modifier:Modifier=Modifier)
 {
     Dialog(onDismissRequest = { /*TODO*/ }) {
-        Card() {
-            Column {
-                Text(text = "")
-                Row {
-                    Column {
-
+        Card(modifier = modifier) {
+            Column(modifier = modifier
+                .padding(16.dp)
+                .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Выбор объема")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        OutlinedButton(
+                            onClick = { waterViewModel.addToDatabase(50) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "50 ml")
+                        }
+                        OutlinedButton(
+                            onClick = { waterViewModel.addToDatabase(150) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "150 ml")
+                        }
+                        OutlinedButton(
+                            onClick = { waterViewModel.addToDatabase(250) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "250 ml")
+                        }
                     }
-                    Column {
-
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        OutlinedButton(
+                            onClick = { waterViewModel.addToDatabase(100) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "100 ml")
+                        }
+                        OutlinedButton(
+                            onClick = { waterViewModel.addToDatabase(200) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "200 ml")
+                        }
+                        OutlinedButton(
+                            onClick = { waterViewModel.addToDatabase(500) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "500 ml")
+                        }
                     }
                 }
-                Text(text = "")
-                OutlinedTextField(value = "",
-                    onValueChange = {  },
-                    leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) },
-                    label = { Text(text = "") },
-                    singleLine = true,)
-                TextButton(onClick = { }) {
-                    Text(text = "ОK",fontFamily = FontFamily.SansSerif,)
+
+                Text(text = "Свое значение")
+                OutlinedTextField(
+                    value = waterViewModel.textFieldValue,
+                    onValueChange = { newValue ->
+                        waterViewModel.updateTextFieldValue(newValue)
+                    },
+                    leadingIcon = { Icon(painterResource(id = R.drawable.cup), contentDescription = null) },
+                    label = { Text(text = "ml") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
+                TextButton(onClick = { waterViewModel.addToDatabase(waterViewModel.customWaterAmount) },modifier=modifier.align(alignment = Alignment.End)) {
+                    Text(text = "ОK",fontFamily = FontFamily.SansSerif)
                 }
             }
         }
     }
 }
 
+
+
 @Composable
 fun Drop(
     usedWaterAmount:Int,
+    onAddWaterClick: () -> Unit,
     totalWaterAmount:Int,
 
     modifier: Modifier=Modifier
@@ -164,9 +257,22 @@ fun Drop(
     val waterPercentage = animateFloatAsState(
         targetValue = usedWaterAmount.toFloat()/totalWaterAmount.toFloat(),
         label="Water animation",
+        animationSpec = tween(durationMillis = 2000)
+    ).value
+    val textStyle = animateIntAsState(
+        targetValue = usedWaterAmount,
+        label="Used water amount",
         animationSpec = tween(durationMillis = 5000)
     ).value
-    Box(modifier = modifier.fillMaxSize()) {
+    val textPrecentage = animateIntAsState(
+        targetValue = ((usedWaterAmount/totalWaterAmount.toFloat())*100).toInt(),
+        label="Used water amount",
+        animationSpec = tween(durationMillis = 5000)
+    ).value
+    Box(modifier = modifier
+        .fillMaxSize()
+        .aspectRatio(1f)
+        .padding(32.dp)) {
         Canvas(
             modifier= modifier.fillMaxSize()
         ) {
@@ -216,7 +322,7 @@ fun Drop(
                 }
                 // Создание линейного градиента
                 val gradient = Brush.linearGradient(
-                    colors = listOf( Color(0xFF9FCAFF),Color(0xFF91AADA)),
+                    colors = listOf( Color(0xFF00C2FF),Color(0xFF00C2FF)),
                     start = Offset(0f, 0f),
                     end = Offset(size.height, size.height)
                 )
@@ -239,8 +345,7 @@ fun Drop(
                     path = waterPath,
                     color = Color(0xFFA1D2FD)
                 )
-
-                 */
+               */
             }
             drawPath(
                 path = dropPath,
@@ -252,9 +357,16 @@ fun Drop(
                 )
             )
         }
-        Text(fontSize = 30.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.SansSerif, text = "$usedWaterAmount / $totalWaterAmount",modifier= Modifier
-            .align(alignment = Alignment.Center))
-        IconButton(onClick = {  },modifier= Modifier
+        Column(horizontalAlignment = Alignment.CenterHorizontally,modifier= Modifier
+            .align(alignment = Alignment.Center)
+            .fillMaxHeight()) {
+            Spacer(modifier = Modifier.weight(0.4f))
+            Column( horizontalAlignment = Alignment.CenterHorizontally,modifier = Modifier.weight(0.6f)){
+                Text(fontSize = 50.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.SansSerif, text = "${textPrecentage}%")
+                Text(fontSize = 15.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.SansSerif, text = "$textStyle / $totalWaterAmount")
+            }
+        }
+        IconButton(onClick = onAddWaterClick,modifier= Modifier
             .align(alignment = Alignment.BottomCenter)
             .background(
                 color = Color.White,
