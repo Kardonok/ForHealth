@@ -27,7 +27,7 @@ fun NavBar(navController:NavHostController, modifier: Modifier=Modifier)
 {
     Row(modifier= modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
 
-        IconButton(onClick = { /* Обработка клика */ }) {
+        IconButton(onClick = { navController.navigate(Screen.Water.rout) }) {
             Icon(Icons.Filled.Notifications, contentDescription = "Add Icon")
         }
 

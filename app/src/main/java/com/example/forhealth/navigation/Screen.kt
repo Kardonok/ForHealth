@@ -9,4 +9,6 @@ sealed class Screen(val rout: String) {
     object Registration : Screen("registration")
 
     object Loading : Screen("loading")
+
+    object Water : Screen("water")
 }
