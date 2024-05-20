@@ -252,7 +252,7 @@ fun DefaultUserCard(modifier:Modifier = Modifier, navController: NavHostControll
                         .clip(RoundedCornerShape(75.dp)))
                 Box(modifier = modifier.weight(1f))
                 {
-                    TextButton(onClick = { navController.navigate(Screen.Greeting.rout) },modifier.align(alignment = Alignment.Center)) {
+                    TextButton(onClick = { navController.navigate(Screen.Greeting.route) },modifier.align(alignment = Alignment.Center)) {
                         Icon(Icons.Filled.Create, contentDescription = "Edit Icon")
                         Text(text = "Создать аккаунт")
                     }

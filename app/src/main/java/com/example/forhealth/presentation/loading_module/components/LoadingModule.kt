@@ -43,13 +43,13 @@ fun LoadingModule(navController: NavHostController, dataStoreRepository: DataSto
     if (isFirstLaunch != null) {
         LaunchedEffect(Unit) {
             if (isFirstLaunch == true) {
-                navController.navigate(Screen.Greeting.rout){
-                    popUpTo(Screen.Loading.rout) { inclusive = true }
+                navController.navigate(Screen.Greeting.route){
+                    popUpTo(Screen.Loading.route) { inclusive = true }
                 }
                 dataStoreRepository.saveLaunchPreference(false)
             } else {
-                navController.navigate(Screen.Profile.rout){
-                    popUpTo(Screen.Loading.rout) { inclusive = true }
+                navController.navigate(Screen.Profile.route){
+                    popUpTo(Screen.Loading.route) { inclusive = true }
                 }
             }
         }

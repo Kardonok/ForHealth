@@ -37,27 +37,27 @@ class MainActivity : ComponentActivity() {
 
                     val navController = rememberNavController()
 
-                    NavHost(navController= navController, startDestination = Screen.Loading.rout)
+                    NavHost(navController= navController, startDestination = Screen.Loading.route)
                     {
-                        composable(route= Screen.HabitTracker.rout){
+                        composable(route= Screen.HabitTracker.route){
                             HabitTrackerModule(navController=navController)
                         }
-                        composable(route=Screen.Profile.rout){
+                        composable(route=Screen.Profile.route){
                             ProfileModule(navController=navController)
                         }
-                        composable(route=Screen.Greeting.rout){
+                        composable(route=Screen.Greeting.route){
                             GreetingModule(navController=navController)
                         }
-                        composable(route=Screen.Login.rout){
+                        composable(route=Screen.Login.route){
                             LoginModule(navController=navController)
                         }
-                        composable(route=Screen.Registration.rout){
+                        composable(route=Screen.Registration.route){
                             RegistrationModule(navController=navController)
                         }
-                        composable(route=Screen.Loading.rout){
+                        composable(route=Screen.Loading.route){
                             LoadingModule(navController = navController, dataStoreRepository = dataStoreRepository)
                         }
-                        composable(route=Screen.Water.rout){
+                        composable(route=Screen.Water.route){
                             WaterModule(navController = navController)
                         }
                     }
