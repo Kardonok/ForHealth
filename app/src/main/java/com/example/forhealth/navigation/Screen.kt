@@ -11,4 +11,6 @@ sealed class Screen(val route: String) {
     object Loading : Screen("loading")
 
     object Water : Screen("water")
+
+    object WomanHealth : Screen("woman_health")
 }
