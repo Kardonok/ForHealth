@@ -113,7 +113,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
         Column(modifier = modifier.padding(innerPadding)) {
             Box(modifier = modifier.weight(0.2f))
             {
-                IconButton(onClick = { navController.popBackStack() },){
+                IconButton(onClick = { navController.popBackStack() }){
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Return Icon")
                 }
             }
@@ -169,7 +169,7 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
         Column(modifier = modifier.padding(innerPadding)) {
             Box(modifier = modifier.weight(0.2f))
             {
-                IconButton(onClick = { navController.popBackStack() },){
+                IconButton(onClick = { navController.popBackStack() }){
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Return Icon")
                 }
             }

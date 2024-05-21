@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.forhealth.data.database.App
-import com.example.forhealth.data.repositories.dataStore
 import com.example.forhealth.navigation.Screen
 import com.example.forhealth.presentation.habit_tracker_module.components.HabitTrackerModule
 import com.example.forhealth.presentation.loading_module.components.LoadingModule

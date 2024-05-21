@@ -1,6 +1,5 @@
 package com.example.forhealth.presentation.registration_module
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +10,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.forhealth.data.database.App
 import com.example.forhealth.data.models.ProfileItem
 import com.example.forhealth.data.repositories.ProfileRepository
-import com.example.forhealth.presentation.profile_module.ProfileViewModel
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel(private val profileRepository: ProfileRepository):ViewModel() {
