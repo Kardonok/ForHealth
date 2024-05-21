@@ -9,10 +9,8 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.forhealth.data.database.App
-import com.example.forhealth.data.models.HabitTrackerItem
 import com.example.forhealth.data.models.WaterItem
 import com.example.forhealth.data.repositories.WaterRepository
-import com.example.forhealth.presentation.habit_tracker_module.HabitTrackerViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

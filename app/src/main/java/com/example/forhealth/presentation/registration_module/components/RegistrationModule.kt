@@ -55,7 +55,7 @@ fun GreetingModule(navController: NavHostController, modifier: Modifier=Modifier
         bottomBar = {
             Box(modifier = modifier.fillMaxWidth())
             {
-                TextButton(onClick = { navController.navigate(Screen.Profile.rout) },modifier=modifier.align(alignment = Alignment.Center)){
+                TextButton(onClick = { navController.navigate(Screen.Profile.route) },modifier=modifier.align(alignment = Alignment.Center)){
                     Text(text = "пропустить")
                 }
             } },
@@ -82,11 +82,11 @@ fun GreetingModule(navController: NavHostController, modifier: Modifier=Modifier
                 Spacer(modifier = modifier.height(10.dp))
                 Text(fontSize = 20.sp, fontFamily = FontFamily.SansSerif, text = "давайте начнем")
                 Spacer(modifier = modifier.height(20.dp))
-                Button(onClick = { navController.navigate(Screen.Login.rout) },modifier.width(180.dp)) {
+                Button(onClick = { navController.navigate(Screen.Login.route) },modifier.width(180.dp)) {
                     Text(text = "Войти")
                 }
                 Spacer(modifier = modifier.height(5.dp))
-                FilledTonalButton(onClick = { navController.navigate(Screen.Registration.rout) },modifier.width(180.dp)) {
+                FilledTonalButton(onClick = { navController.navigate(Screen.Registration.route) },modifier.width(180.dp)) {
                     Text(text = "Регистрация")
                 }
             }
@@ -105,7 +105,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
         bottomBar = {
             Box(modifier = modifier.fillMaxWidth())
             {
-                TextButton(onClick = { navController.navigate(Screen.Profile.rout) },modifier=modifier.align(alignment = Alignment.Center)){
+                TextButton(onClick = { navController.navigate(Screen.Profile.route) },modifier=modifier.align(alignment = Alignment.Center)){
                     Text(text = "пропустить")
                 }
             } },
@@ -113,7 +113,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
         Column(modifier = modifier.padding(innerPadding)) {
             Box(modifier = modifier.weight(0.2f))
             {
-                IconButton(onClick = { navController.popBackStack() },){
+                IconButton(onClick = { navController.popBackStack() }){
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Return Icon")
                 }
             }
@@ -143,7 +143,7 @@ fun LoginModule(navController: NavHostController,modifier: Modifier=Modifier, re
                     label = { Text(text = "Пароль") },
                     singleLine = true,)
                 Spacer(modifier = modifier.height(10.dp))
-                Button(onClick = {  if(registrationViewModel.checkProfileInDatabase(profile.value)) {navController.navigate(Screen.Profile.rout) }},modifier= modifier.width(180.dp)) {
+                Button(onClick = {  if(registrationViewModel.checkProfileInDatabase(profile.value)) {navController.navigate(Screen.Profile.route) }},modifier= modifier.width(180.dp)) {
                     Text(text = "Вход")
                 }
             }
@@ -160,7 +160,7 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
         bottomBar = {
             Box(modifier = modifier.fillMaxWidth())
             {
-                TextButton(onClick = { navController.navigate(Screen.Profile.rout) },modifier=modifier.align(alignment = Alignment.Center)){
+                TextButton(onClick = { navController.navigate(Screen.Profile.route) },modifier=modifier.align(alignment = Alignment.Center)){
                     Text(text = "пропустить")
                 }
             } },
@@ -169,7 +169,7 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
         Column(modifier = modifier.padding(innerPadding)) {
             Box(modifier = modifier.weight(0.2f))
             {
-                IconButton(onClick = { navController.popBackStack() },){
+                IconButton(onClick = { navController.popBackStack() }){
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Return Icon")
                 }
             }
@@ -212,7 +212,7 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
                     singleLine = true,)
                 Spacer(modifier = modifier.height(5.dp))
                 Button(onClick = {  registrationViewModel.addProfileToDatabase()
-                                    navController.navigate(Screen.Profile.rout) },modifier= modifier.width(180.dp)) {
+                                    navController.navigate(Screen.Profile.route) },modifier= modifier.width(180.dp)) {
                     Text(text = "Регистрация")
                 }
             }
