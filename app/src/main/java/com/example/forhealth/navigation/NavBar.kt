@@ -32,7 +32,7 @@ fun NavBar(navController:NavHostController, modifier: Modifier=Modifier)
             Icon(painterResource(id = R.drawable.profile_icon), contentDescription = "Profile")
         }
 
-        IconButton(onClick = { /* Обработка клика */ }) {
+        IconButton(onClick = { if (currentRoute != Screen.WomanHealth.route) { navController.navigate(Screen.WomanHealth.route) } }) {
             Icon(painterResource(id = R.drawable.woman_health_icon), contentDescription = "Woman health")
         }
 
