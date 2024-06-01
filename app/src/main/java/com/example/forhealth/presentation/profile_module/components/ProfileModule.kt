@@ -1,5 +1,7 @@
 package com.example.forhealth.presentation.profile_module.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,13 +27,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -58,6 +63,15 @@ fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier
 {
     val profile by profileViewModel.profile.collectAsState(initial = ProfileItem( userName = "", userWeight = "", userHeight = "", userGender = "", userToken = ""))
 
+    val rotation = remember { Animatable(initialValue = 0f) }
+
+    LaunchedEffect(profile!=null) {
+        rotation.animateTo(
+            targetValue = if (profile!=null) 360f else 0f,
+            animationSpec = tween(durationMillis = 500)
+        )
+    }
+
     if(profileViewModel.editCardIsOpen)
     {
         EditCard(profileItem = profile, profileViewModel = profileViewModel, modifier = modifier)
@@ -71,16 +85,23 @@ fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier
             .padding(innerPadding)
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
-            if(profile != null)
+            Box(modifier = Modifier.graphicsLayer {
+                rotationX = rotation.value
+            })
             {
-                UserCard(profileItem = profile, profileViewModel = profileViewModel, modifier = modifier)
-            }
-            else
-            {
-                DefaultUserCard(navController=navController)
+                if(profile != null)
+                {
+                    UserCard(profileItem = profile, profileViewModel = profileViewModel, modifier = modifier)
+                }
+                else
+                {
+                    DefaultUserCard(navController=navController)
+                }
             }
             Spacer(modifier = modifier.height(16.dp))
-            SettingsCard(modifier = modifier.weight(1f).padding(bottom = 16.dp),profileViewModel,profile)
+            SettingsCard(modifier = modifier
+                .weight(1f)
+                .padding(bottom = 16.dp),profileViewModel,profile)
         }
     }
 }
@@ -102,7 +123,9 @@ fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, profileView
             Box(modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp)) {
-                Icon(Icons.Filled.Create, contentDescription = "Edit Icon", modifier = Modifier.align(alignment = Alignment.CenterStart).clickable { profileViewModel.editCardIsOpen = true })
+                Icon(Icons.Filled.Create, contentDescription = "Edit Icon", modifier = Modifier
+                    .align(alignment = Alignment.CenterStart)
+                    .clickable { profileViewModel.editCardIsOpen = true })
                 Text(
                     text = "Профиль",
                     fontFamily = FontFamily.SansSerif,

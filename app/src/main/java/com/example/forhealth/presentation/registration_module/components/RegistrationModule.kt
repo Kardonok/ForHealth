@@ -1,6 +1,15 @@
 package com.example.forhealth.presentation.registration_module.components
 
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,11 +36,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,6 +74,15 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
         navController.navigate(Screen.Profile.route)
     }
 
+    val rotation = remember { androidx.compose.animation.core.Animatable(initialValue = 0f) }
+
+    LaunchedEffect(registrationViewModel.loginState) {
+        rotation.animateTo(
+            targetValue = if (registrationViewModel.loginState) 0f else 180f,
+            animationSpec = tween(durationMillis = 500)
+        )
+    }
+
     Scaffold(
         bottomBar = {
             Box(modifier = modifier.fillMaxWidth())
@@ -80,13 +103,17 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
         {
             Spacer(modifier = Modifier.weight(0.1f))
 
-            Column(modifier = modifier
+            Column(modifier = Modifier
                 .fillMaxSize()
-                .weight(0.8f),
+                .weight(0.8f)
+                .animateContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,) {
                 Image(
-                    painter = painterResource(if(registrationViewModel.loginState) R.drawable.login_image else R.drawable.registration_image),
+                    modifier = Modifier.graphicsLayer {
+                        rotationY = rotation.value
+                    },
+                    painter = painterResource(if (registrationViewModel.loginState) R.drawable.login_image else R.drawable.registration_image),
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -150,25 +177,28 @@ fun RegistrationModule(navController: NavHostController,modifier: Modifier=Modif
                     leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password Icon") },
                     label = { Text(text = "Пароль") },
                     singleLine = true,)
-                if(!registrationViewModel.loginState)
-                {
-                    OutlinedTextField(
-                        value = registrationState.userHeight,
-                        onValueChange = { registrationViewModel.updateRegistrationState("userHeight", it) },
-                        leadingIcon = { Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Login Icon") },
-                        label = { Text(text = "Рост") },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                    )
+                AnimatedVisibility(visible = !registrationViewModel.loginState,
+                    enter = fadeIn()+ expandVertically(),
+                    exit = shrinkVertically() + fadeOut()) {
+                    Column( modifier = Modifier.animateContentSize()) {
+                        OutlinedTextField(
+                            value = registrationState.userHeight,
+                            onValueChange = { registrationViewModel.updateRegistrationState("userHeight", it) },
+                            leadingIcon = { Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Login Icon") },
+                            label = { Text(text = "Рост") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                        )
 
-                    OutlinedTextField(
-                        value = registrationState.userWeight,
-                        onValueChange = { registrationViewModel.updateRegistrationState("userWeight", it) },
-                        leadingIcon = { Icon(Icons.Filled.FavoriteBorder, contentDescription = "Login Icon") },
-                        label = { Text(text = "Вес") },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                    )
+                        OutlinedTextField(
+                            value = registrationState.userWeight,
+                            onValueChange = { registrationViewModel.updateRegistrationState("userWeight", it) },
+                            leadingIcon = { Icon(Icons.Filled.FavoriteBorder, contentDescription = "Login Icon") },
+                            label = { Text(text = "Вес") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
