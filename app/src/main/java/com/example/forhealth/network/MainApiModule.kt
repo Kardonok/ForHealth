@@ -14,7 +14,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Query
 
 
-private const val BASE_URL = ""
+private const val BASE_URL = "http://192.168.1.105:8080/"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -24,19 +24,19 @@ private val retrofit = Retrofit.Builder()
 interface MainApiService
 {
     //Регистрация - отправляем данные на проверку, получаем либо ошибку, либо успех с готовым профилем со ВСЕМИ полями
-    @POST("registration")
+    @POST("/")
     suspend fun registerUserOnServer(@Body user:ProfileApiItem): Response<ProfileApiItem>
 
     //Вход - отправляем логин и пароль на проверку, при нахождении профиля в бд получаем профиль со ВСЕМИ полями
-    @GET("login")
+    @GET("/")
     suspend fun getUserFromServer(@Query("user_name") userName:String, @Query("user_password") userPassword:String): Response<ProfileApiItem>
 
     //Изменение - отправляем профиль со ВСЕМИ данными, при нахождении профиля по id и токену получаем измененый профиль
-    @PUT("change")
+    @PUT("/")
     suspend fun changeUserOnServer(@Body user: ProfileApiItem): Response<ProfileApiItem>
 
     //Удаление - отправляем локальный id и токен, при нахождении на сервере переданного id и токена профиль удаляется
-    @DELETE("delete")
+    @DELETE("/")
     suspend fun deleteUserFromServer(@Query("user_id") userId:Int, @Query("user_token") userToken:String): Response<Void>
 }
 

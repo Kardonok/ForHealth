@@ -48,11 +48,6 @@ class ProfileViewModel(private val profileRepository: ProfileRepository):ViewMod
             }
         }
     }
-    fun addProfileToDatabase(profileItem: ProfileItem)
-    {
-            viewModelScope.launch {
-                profileRepository.insertProfile(profileItem)}
-    }
 
     fun CheckWord(value: String,maxLength:Int):Boolean
     {

@@ -15,8 +15,6 @@ import com.example.forhealth.navigation.Screen
 import com.example.forhealth.presentation.habit_tracker_module.components.HabitTrackerModule
 import com.example.forhealth.presentation.loading_module.components.LoadingModule
 import com.example.forhealth.presentation.profile_module.components.ProfileModule
-import com.example.forhealth.presentation.registration_module.components.GreetingModule
-import com.example.forhealth.presentation.registration_module.components.LoginModule
 import com.example.forhealth.presentation.registration_module.components.RegistrationModule
 import com.example.forhealth.presentation.ui.theme.ForHealthTheme
 import com.example.forhealth.presentation.water_module.components.WaterModule
@@ -44,12 +42,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route=Screen.Profile.route){
                             ProfileModule(navController=navController)
-                        }
-                        composable(route=Screen.Greeting.route){
-                            GreetingModule(navController=navController)
-                        }
-                        composable(route=Screen.Login.route){
-                            LoginModule(navController=navController)
                         }
                         composable(route=Screen.Registration.route){
                             RegistrationModule(navController=navController)

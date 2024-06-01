@@ -56,7 +56,7 @@ fun ProfileModulePreview()
 @Composable
 fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier, profileViewModel: ProfileViewModel = viewModel(factory=ProfileViewModel.factory))
 {
-    val profile by profileViewModel.profile.collectAsState(initial = ProfileItem(id = 0, userName = "", userWeight = "", userHeight = ""))
+    val profile by profileViewModel.profile.collectAsState(initial = ProfileItem( userName = "", userWeight = "", userHeight = "", userGender = "", userToken = ""))
 
     if(profileViewModel.editCardIsOpen)
     {
@@ -104,7 +104,7 @@ fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, profileView
                 .padding(start = 16.dp, end = 16.dp)) {
                 Icon(Icons.Filled.Create, contentDescription = "Edit Icon", modifier = Modifier.align(alignment = Alignment.CenterStart).clickable { profileViewModel.editCardIsOpen = true })
                 Text(
-                    text = "id: ${profileItem.id}",
+                    text = "Профиль",
                     fontFamily = FontFamily.SansSerif,
                     color = Color.White,
                     fontSize = 20.sp,
@@ -192,7 +192,7 @@ fun DefaultUserCard(modifier:Modifier = Modifier, navController: NavHostControll
                         .clip(RoundedCornerShape(75.dp)))
                 Box(modifier = modifier.weight(1f))
                 {
-                    TextButton(onClick = { navController.navigate(Screen.Greeting.route) },modifier.align(alignment = Alignment.Center)) {
+                    TextButton(onClick = { navController.navigate(Screen.Registration.route) },modifier.align(alignment = Alignment.Center)) {
                         Icon(Icons.Filled.Create, contentDescription = "Edit Icon")
                         Text(text = "Создать аккаунт")
                     }
@@ -256,8 +256,8 @@ fun SettingsCard(modifier:Modifier = Modifier, profileViewModel: ProfileViewMode
         )
         {
             Column(modifier = Modifier.align(alignment = Alignment.BottomCenter), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "выйти из аккаунта", fontSize = 16.sp)
-                Text(text = "удалить аккаунт",color=Color.Red, fontSize = 16.sp, modifier=Modifier.clickable {  profileViewModel.deleteProfileFromDatabase(profileItem) })
+                Text(text = "выйти из аккаунта", fontSize = 16.sp,modifier=Modifier.clickable {  profileViewModel.deleteProfileFromDatabase(profileItem) })
+                Text(text = "удалить аккаунт",color=Color.Red, fontSize = 16.sp )
             }
         }
     }
