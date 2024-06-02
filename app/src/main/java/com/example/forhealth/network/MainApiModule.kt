@@ -37,7 +37,7 @@ interface MainApiService
 
     //Удаление - отправляем локальный id и токен, при нахождении на сервере переданного id и токена профиль удаляется
     @DELETE("/")
-    suspend fun deleteUserFromServer(@Query("user_id") userId:Int, @Query("user_token") userToken:String): Response<Void>
+    suspend fun deleteUserFromServer(@Query("user_name") userName:String, @Query("user_token") userToken:String): Response<Void>
 }
 
 object MainApiModule
