@@ -7,8 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "profile_list")
 data class ProfileItem(
-    @ColumnInfo(name = "user_name") val userName: String,
+    @PrimaryKey @ColumnInfo(name = "user_name") val userName: String,
     @ColumnInfo(name = "user_height") val userHeight: String,
     @ColumnInfo(name = "user_weight") val userWeight: String,
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "user_id") val id:Int=0
+    @ColumnInfo(name = "user_gender") val userGender: String,
+    @ColumnInfo(name = "user_token") val userToken: String,
 )
+//@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "user_id") val id:Int=0

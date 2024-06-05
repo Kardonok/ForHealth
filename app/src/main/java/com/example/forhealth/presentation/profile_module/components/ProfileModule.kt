@@ -1,5 +1,7 @@
 package com.example.forhealth.presentation.profile_module.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,13 +27,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -56,7 +61,16 @@ fun ProfileModulePreview()
 @Composable
 fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier, profileViewModel: ProfileViewModel = viewModel(factory=ProfileViewModel.factory))
 {
-    val profile by profileViewModel.profile.collectAsState(initial = ProfileItem(id = 0, userName = "", userWeight = "", userHeight = ""))
+    val profile by profileViewModel.profile.collectAsState(initial = ProfileItem( userName = "", userWeight = "", userHeight = "", userGender = "", userToken = ""))
+
+    val rotation = remember { Animatable(initialValue = 0f) }
+
+    LaunchedEffect(profile!=null) {
+        rotation.animateTo(
+            targetValue = if (profile!=null) 0f else 360f,
+            animationSpec = tween(durationMillis = 500)
+        )
+    }
 
     if(profileViewModel.editCardIsOpen)
     {
@@ -71,16 +85,23 @@ fun ProfileModule(navController: NavHostController, modifier:Modifier = Modifier
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier
             .padding(innerPadding)
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
-            if(profile != null)
+            Box(modifier = Modifier.graphicsLayer {
+                rotationX = rotation.value
+            })
             {
-                UserCard(profileItem = profile, profileViewModel = profileViewModel, modifier = modifier)
-            }
-            else
-            {
-                DefaultUserCard(navController=navController)
+                if(profile != null)
+                {
+                    UserCard(profileItem = profile, profileViewModel = profileViewModel, modifier = modifier)
+                }
+                else
+                {
+                    DefaultUserCard(navController=navController)
+                }
             }
             Spacer(modifier = modifier.height(16.dp))
-            SettingsCard(modifier = modifier.weight(1f).padding(bottom = 16.dp),profileViewModel,profile)
+            SettingsCard(modifier = modifier
+                .weight(1f)
+                .padding(bottom = 16.dp),profileViewModel,profile)
         }
     }
 }
@@ -102,9 +123,11 @@ fun UserCard(modifier:Modifier = Modifier, profileItem: ProfileItem, profileView
             Box(modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp)) {
-                Icon(Icons.Filled.Create, contentDescription = "Edit Icon", modifier = Modifier.align(alignment = Alignment.CenterStart).clickable { profileViewModel.editCardIsOpen = true })
+                Icon(Icons.Filled.Create, contentDescription = "Edit Icon", modifier = Modifier
+                    .align(alignment = Alignment.CenterStart)
+                    .clickable { profileViewModel.editCardIsOpen = true })
                 Text(
-                    text = "id: ${profileItem.id}",
+                    text = "Профиль",
                     fontFamily = FontFamily.SansSerif,
                     color = Color.White,
                     fontSize = 20.sp,
@@ -192,7 +215,7 @@ fun DefaultUserCard(modifier:Modifier = Modifier, navController: NavHostControll
                         .clip(RoundedCornerShape(75.dp)))
                 Box(modifier = modifier.weight(1f))
                 {
-                    TextButton(onClick = { navController.navigate(Screen.Greeting.route) },modifier.align(alignment = Alignment.Center)) {
+                    TextButton(onClick = { navController.navigate(Screen.Registration.route) },modifier.align(alignment = Alignment.Center)) {
                         Icon(Icons.Filled.Create, contentDescription = "Edit Icon")
                         Text(text = "Создать аккаунт")
                     }
@@ -256,8 +279,12 @@ fun SettingsCard(modifier:Modifier = Modifier, profileViewModel: ProfileViewMode
         )
         {
             Column(modifier = Modifier.align(alignment = Alignment.BottomCenter), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "выйти из аккаунта", fontSize = 16.sp)
-                Text(text = "удалить аккаунт",color=Color.Red, fontSize = 16.sp, modifier=Modifier.clickable {  profileViewModel.deleteProfileFromDatabase(profileItem) })
+                Text(text = "выйти из аккаунта", fontSize = 16.sp,modifier=Modifier.clickable { profileViewModel.deleteProfileFromLocalDatabase(profileItem)})
+                Text(text = "удалить аккаунт",color=Color.Red, fontSize = 16.sp ,modifier=Modifier.clickable {
+                    if (profileItem != null) {
+                        profileViewModel.deleteProfile(profileItem.userName,profileItem.userToken)
+                    }
+                })
             }
         }
     }
@@ -265,9 +292,13 @@ fun SettingsCard(modifier:Modifier = Modifier, profileViewModel: ProfileViewMode
 
 @Composable
 fun EditCard(profileItem: ProfileItem, profileViewModel: ProfileViewModel,modifier: Modifier=Modifier) {
-    profileViewModel.name = profileItem.userName
-    profileViewModel.weight = profileItem.userWeight
-    profileViewModel.height = profileItem.userHeight
+    val profileState by profileViewModel.profileState.collectAsState()
+
+    profileViewModel.updateProfileState("userName",profileItem.userName)
+    profileViewModel.updateProfileState("userHeight",profileItem.userHeight)
+    profileViewModel.updateProfileState("userWeight",profileItem.userWeight)
+    profileViewModel.updateProfileState("userGender",profileItem.userGender)
+
     Dialog(onDismissRequest = {}) {
         Card(modifier = modifier.padding(16.dp)
         ) {
@@ -278,25 +309,25 @@ fun EditCard(profileItem: ProfileItem, profileViewModel: ProfileViewModel,modifi
             ) {
                 Text("Редактировать профиль",fontFamily = FontFamily.SansSerif)
                 Spacer(modifier.height(8.dp))
-                OutlinedTextField(value = profileViewModel.name,
+                OutlinedTextField(value = profileState.userName,
                     singleLine = true,
                     label = {Text(text="Имя")},
-                    onValueChange = {word->profileViewModel.OnFieldChanged("name",word)},
+                    onValueChange = {profileViewModel.updateProfileState("userName",it)},
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),)
                 Spacer(modifier.height(8.dp))
-                OutlinedTextField(value = profileViewModel.weight,
+                OutlinedTextField(value = profileState.userWeight,
                     singleLine = true,
                     label = {Text(text="Вес")},
-                    onValueChange = {word->profileViewModel.OnFieldChanged("weight",word)},
+                    onValueChange = {profileViewModel.updateProfileState("userWeight",it)},
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),)
                 Spacer(modifier.height(8.dp))
-                OutlinedTextField(value = profileViewModel.height,
+                OutlinedTextField(value = profileState.userHeight,
                     singleLine = true,
                     label = {Text(text="Рост")},
-                    onValueChange = {word->profileViewModel.OnFieldChanged("height",word)},
+                    onValueChange = {profileViewModel.updateProfileState("userHeight",it)},
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),)
                 Spacer(modifier.height(8.dp))
-                TextButton(onClick = { profileViewModel.updateProfileInDatabase(profileItem)}, modifier = modifier.align(alignment = Alignment.End)) {
+                TextButton(onClick = { profileViewModel.updateProfile(profileItem.userToken)}, modifier = modifier.align(alignment = Alignment.End)) {
                     Text(text = "ОK",fontFamily = FontFamily.SansSerif)
                 }
             }

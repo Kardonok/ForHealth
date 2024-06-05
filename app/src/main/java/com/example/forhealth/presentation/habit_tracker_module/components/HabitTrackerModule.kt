@@ -3,6 +3,8 @@ package com.example.forhealth.presentation.habit_tracker_module.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
@@ -81,7 +83,6 @@ fun HabitTrackerModule(navController: NavHostController,modifier: Modifier=Modif
                     .fillMaxWidth()
             ) {
                 items(itemList.value) { item ->
-                    AnimatedVisibility(visible = true, enter = fadeIn() + expandVertically()) {
                         Box(modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp))
                         {
                             HabitCard(
@@ -90,7 +91,6 @@ fun HabitTrackerModule(navController: NavHostController,modifier: Modifier=Modif
                                 currentTime = currentTime
                             )
                         }
-                    }
                 }
                 item {
 

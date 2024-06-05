@@ -71,7 +71,7 @@ fun WaterModulePreview()
 }
 
 @Composable
-fun WaterModule(waterViewModel: WaterViewModel= viewModel(factory = WaterViewModel.factory), navController: NavHostController, modifier:Modifier=Modifier)
+fun WaterModule(waterViewModel: WaterViewModel= viewModel(factory = WaterViewModel.factory), navController: NavHostController,modifier: Modifier = Modifier)
 {
     val waterState by waterViewModel.waterState.collectAsState()
 
@@ -167,17 +167,6 @@ fun SingleRecordCard(waterItem:WaterItem,waterViewModel: WaterViewModel,modifier
         }
     }
 }
-
-@Composable
-fun RecommendationsCard(modifier:Modifier=Modifier) {
-    Box(modifier= modifier
-        .fillMaxSize()
-        .border(width = 2.dp, shape = RoundedCornerShape(16.dp), color = Color.Black)) {
-        Text(text = "Записи",modifier=modifier.padding(16.dp))
-    }
-}
-
-
 
 @Composable
 fun ChooseWaterVolumeCard(waterViewModel: WaterViewModel, modifier:Modifier=Modifier)
@@ -367,7 +356,7 @@ fun Drop(
                 path = dropPath,
                 color = Color.Black,
                 style = Stroke(
-                    width = 4.dp.toPx(),
+                    width = 2.dp.toPx(),
                     cap = StrokeCap.Round,
                     join = StrokeJoin.Round
                 )
@@ -389,7 +378,7 @@ fun Drop(
                 shape = RoundedCornerShape(16.dp)
             )
             .border(
-                width = 4.dp,
+                width = 2.dp,
                 color = Color.Black,
                 shape = RoundedCornerShape(16.dp)
             )) {

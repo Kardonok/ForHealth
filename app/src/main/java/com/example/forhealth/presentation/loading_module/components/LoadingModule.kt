@@ -37,7 +37,7 @@ fun LoadingModule(navController: NavHostController, dataStoreRepository: DataSto
     if (isFirstLaunch != null) {
         LaunchedEffect(Unit) {
             if (isFirstLaunch == true) {
-                navController.navigate(Screen.Greeting.route){
+                navController.navigate(Screen.Registration.route){
                     popUpTo(Screen.Loading.route) { inclusive = true }
                 }
                 dataStoreRepository.saveLaunchPreference(false)

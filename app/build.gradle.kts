@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
 android {
@@ -83,4 +84,16 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Retrofit with Scalar Converter
+    //implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    //serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
